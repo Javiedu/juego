@@ -1,6 +1,7 @@
 var saltoUno=0;
 var saltoDos=0;
 var portalUnoActivo = false;
+var cofreAbierto = false;
 
 
 var mainState={ 
@@ -17,6 +18,7 @@ preload:function(){
     game.load.spritesheet('naruto','assets/naruto.png', 45, 63.75);
     game.load.spritesheet('bowser','assets/bowser.png', 112.77, 99);
     game.load.spritesheet('portal','assets/portal.png', 35, 140);
+    game.load.spritesheet('cofre','assets/cofre.png', 38, 40);
 },  
 
 create:function(){
@@ -84,7 +86,8 @@ this.plat.create(720, 658,'platDos');
 
 this.portal = game.add.sprite(750, 3500, 'portal')
 this.bowser = game.add.sprite(650, 3500, 'bowser')
-this.personaUno = game.add.sprite(200,3525,'naruto');/////////////////////////////////////
+this.cofre = game.add.sprite(390, 618, 'cofre')
+this.personaUno = game.add.sprite(200,600,'naruto');/////////////////////////////////////
 //this.personaDos = game.add.sprite(200,4900,'portal');/////////////////////////////////////
 
 this.game.physics.arcade.enable(this.personaUno);
@@ -119,6 +122,11 @@ this.plat.setAll('body.immovable', true)
 this.game.physics.arcade.enable(this.portal)
 this.portal.alpha = 0;
 
+this.game.physics.arcade.enable(this.cofre)
+this.cofre.animations.add('cerrado',[0],10,true);
+this.cofre.animations.add('abierto',[1],10,true);
+
+
 },
 
 update:function(){
@@ -138,9 +146,20 @@ this.game.physics.arcade.collide(this.personaUno,this.plat,function() {
 if(portalUnoActivo){
 this.game.physics.arcade.overlap(this.personaUno, this.portal, function(personaUno){
     personaUno.body.y = 2870
-    console.log('Colisiona')
 })
 }
+
+this.game.physics.arcade.overlap(this.personaUno, this.cofre, function(){
+    cofreAbierto = true
+})
+
+
+if(cofreAbierto == true){
+    this.cofre.animations.play('abierto')
+} else {
+    this.cofre.animations.play('cerrado')
+}
+
 
 if(this.input.keyboard.isDown(Phaser.Keyboard.O)){
     portalUnoActivo = true;
