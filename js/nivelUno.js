@@ -6,8 +6,9 @@ var cofreAbierto = false;
 
 var mainState={ 
 preload:function(){
-    game.load.image('fondo','assets/fondo.png');
-    game.load.image('fondo1','assets/objetosTransparentes.png');
+    game.load.image('fondo','assets/fondoColor.png');
+    game.load.image('objetos','assets/objetosTransparentes.png');
+    game.load.image('paredLateral','assets/paredLateral.png');
     game.load.image('suelos','assets/suelos.png');
     game.load.image('platUno','assets/platFina.png');
     game.load.image('platUnoRev','assets/platFinaRev.png');
@@ -24,7 +25,8 @@ preload:function(){
 create:function(){
 this.game.physics.startSystem(Phaser.Physics.ARCADE);
 this.fondo=game.add.sprite(0,0,'fondo');
-//this.fondo=game.add.sprite(0,0,'fondo1');
+this.objetos=game.add.sprite(0,0,'objetos');
+this.paredLateral = game.add.sprite(0, 0, 'paredLateral')
 this.plat = game.add.group()
 
 
@@ -45,9 +47,7 @@ this.plat.create(441,4485,'platUno');
 this.plat.create(303,4465,'platTres');
 this.plat.create(175,4418,'platTres');
 this.plat.create(185,4305,'platTres');
-this.plat.create(345,4270,'platTres');
-this.plat.create(446,4239,'platTres');
-//NS
+this.plat.create(320,4270,'platTres');
 this.plat.create(344,3831,'platTres');
 this.plat.create(220,3722,'platTres');
 this.plat.create(220,3722,'platTres');
@@ -83,18 +83,26 @@ this.plat.create(540, 658,'platDos');
 this.plat.create(630, 658,'platDos');
 this.plat.create(720, 658,'platDos');
 
+this.movil = game.add.sprite(400,4239,'platTres');
 
 this.portal = game.add.sprite(750, 3500, 'portal')
 this.bowser = game.add.sprite(650, 3500, 'bowser')
 this.cofre = game.add.sprite(390, 618, 'cofre')
-this.personaUno = game.add.sprite(200,600,'naruto');/////////////////////////////////////
-//this.personaDos = game.add.sprite(200,4900,'portal');/////////////////////////////////////
+this.personaUno = game.add.sprite(360,4176,'naruto');/////////////////////////////////////
+
 
 this.game.physics.arcade.enable(this.personaUno);
 this.game.physics.arcade.enable(this.suelos);
 
+this.game.physics.arcade.enable(this.movil)
+this.movil.enableBody = true
+this.movil.body.immovable = true
 
-//this.personaUno.body.gravity.y=1500;
+this.game.physics.arcade.enable(this.paredLateral)
+this.paredLateral.enableBody = true
+this.paredLateral.body.immovable = true
+
+this.personaUno.body.gravity.y=1500;
 this.personaUno.body.setSize(this.personaUno.width-20,this.personaUno.height-21,10,10);
 this.personaUno.body.collideWorldBounds = true;
 
@@ -130,16 +138,28 @@ this.cofre.animations.add('abierto',[1],10,true);
 },
 
 update:function(){
+
+if(this.movil.body.y > 4186){
+    this.movil.body.velocity.y = -100
+} else if(this.movil.body.y < 3900) {
+    this.movil.body.velocity.y = 100
+}
+
 saltoUno = 1
 
 this.game.camera.y = this.personaUno.body.y -300
 
+this.game.physics.arcade.collide(this.personaUno, this.paredLateral)
 
 this.game.physics.arcade.collide(this.personaUno,this.suelos,function() {
     saltoUno=1;
 });
 
 this.game.physics.arcade.collide(this.personaUno,this.plat,function() {
+    saltoUno=1;
+});
+
+this.game.physics.arcade.collide(this.personaUno,this.movil, function() {
     saltoUno=1;
 });
 
@@ -180,7 +200,7 @@ if (this.input.keyboard.isDown(Phaser.Keyboard.A)) {
     this.personaUno.body.velocity.y=700; 
 } else {
     this.personaUno.body.velocity.x=0;
-    this.personaUno.body.velocity.y=0;
+    //this.personaUno.body.velocity.y=0;
 
 }
 
