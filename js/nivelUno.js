@@ -1,28 +1,37 @@
 var saltoUno=0;
 var saltoDos=0;
+var portalUnoActivo = false;
 
 
 var mainState={ 
 preload:function(){
     game.load.image('fondo','assets/fondo.png');
+    game.load.image('fondo1','assets/objetosTransparentes.png');
     game.load.image('suelos','assets/suelos.png');
-    game.load.image('bloque','assets/bloque.png');
     game.load.image('platUno','assets/platFina.png');
+    game.load.image('platUnoRev','assets/platFinaRev.png');
     game.load.image('platDos','assets/bloqueGrande.png');
     game.load.image('platTres','assets/tronco.png');
-    game.load.spritesheet('naruto','assets/naruto.png',45,63.75);
+    game.load.image('sueloSangre','assets/sueloSangre.png');
+    game.load.image('casa','assets/casa.png');
+    game.load.spritesheet('naruto','assets/naruto.png', 45, 63.75);
+    game.load.spritesheet('bowser','assets/bowser.png', 112.77, 99);
+    game.load.spritesheet('portal','assets/portal.png', 35, 140);
 },  
 
 create:function(){
 this.game.physics.startSystem(Phaser.Physics.ARCADE);
-//this.fondo=game.add.sprite(0,0,'fondo');
+this.fondo=game.add.sprite(0,0,'fondo');
+//this.fondo=game.add.sprite(0,0,'fondo1');
 this.plat = game.add.group()
+
 
 this.suelos = game.add.group()
 this.game.world.setBounds(0, 0, 800, 5000)
 
 this.suelos.create(0,4970,'suelos');
-this.suelos.create(300,4970,'suelos');
+this.suelos.create(400,4970,'suelos');
+this.suelos.create(31,2315,'sueloSangre');
 
 this.plat.create(625,4941,'platUno');
 this.plat.create(484,4884,'platDos');
@@ -41,6 +50,11 @@ this.plat.create(344,3831,'platTres');
 this.plat.create(220,3722,'platTres');
 this.plat.create(220,3722,'platTres');
 
+this.plat.create(361,3617,'platUnoRev');
+this.plat.create(448,3617,'platUnoRev');
+this.plat.create(536,3617,'platUnoRev');
+this.plat.create(623,3617,'platUnoRev');
+this.plat.create(710,3617,'platUnoRev');
 this.plat.create(361,3608,'platUno');
 this.plat.create(448,3608,'platUno');
 this.plat.create(536,3608,'platUno');
@@ -51,6 +65,7 @@ this.plat.create(369,3013,'platDos');
 this.plat.create(460,3013,'platDos');
 this.plat.create(550,3013,'platDos');
 this.plat.create(640,3013,'platDos');
+this.plat.create(730,3013,'platDos');
 //
 
 this.plat.create(182,2802,'platUno');
@@ -66,7 +81,11 @@ this.plat.create(540, 658,'platDos');
 this.plat.create(630, 658,'platDos');
 this.plat.create(720, 658,'platDos');
 
-this.personaUno=game.add.sprite(200,3780,'naruto');
+
+this.portal = game.add.sprite(750, 3500, 'portal')
+this.bowser = game.add.sprite(650, 3500, 'bowser')
+this.personaUno = game.add.sprite(200,3525,'naruto');/////////////////////////////////////
+//this.personaDos = game.add.sprite(200,4900,'portal');/////////////////////////////////////
 
 this.game.physics.arcade.enable(this.personaUno);
 this.game.physics.arcade.enable(this.suelos);
@@ -82,6 +101,13 @@ this.personaUno.animations.add('reposo',[1],10,true);
 this.personaUno.animations.add('salto',[10],10,true);
 this.personaUno.animations.play('reposo');
 
+this.portal.animations.add('normal',[0, 1, 2, 3], 6, true);
+this.portal.animations.play('normal');
+
+this.bowser.animations.add('normal',[0, 18, 36, 54, 72, 90], 5, true);
+this.bowser.animations.play('normal');
+
+
 this.game.physics.arcade.enable(this.suelos)
 this.suelos.setAll('enableBody', true)
 this.suelos.setAll('body.immovable', true)
@@ -89,6 +115,9 @@ this.suelos.setAll('body.immovable', true)
 this.game.physics.arcade.enable(this.plat)
 this.plat.setAll('enableBody', true)
 this.plat.setAll('body.immovable', true)
+
+this.game.physics.arcade.enable(this.portal)
+this.portal.alpha = 0;
 
 },
 
@@ -105,6 +134,18 @@ this.game.physics.arcade.collide(this.personaUno,this.suelos,function() {
 this.game.physics.arcade.collide(this.personaUno,this.plat,function() {
     saltoUno=1;
 });
+
+if(portalUnoActivo){
+this.game.physics.arcade.overlap(this.personaUno, this.portal, function(personaUno){
+    personaUno.body.y = 2870
+    console.log('Colisiona')
+})
+}
+
+if(this.input.keyboard.isDown(Phaser.Keyboard.O)){
+    portalUnoActivo = true;
+    this.portal.alpha = 1;
+}
 
 
 if (this.input.keyboard.isDown(Phaser.Keyboard.W) && saltoUno==1) {
