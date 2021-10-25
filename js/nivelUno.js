@@ -15,9 +15,10 @@ preload:function(){
     game.load.image('platDos','assets/bloqueGrande.png');
     game.load.image('platTres','assets/tronco.png');
     game.load.image('sueloSangre','assets/sueloSangre.png');
+    game.load.image('paredSangre','assets/paredSangre.png');
     game.load.image('casa','assets/casa.png');
     game.load.spritesheet('naruto','assets/naruto.png', 45, 63.75);
-    game.load.spritesheet('bowser','assets/bowser.png', 112.77, 99);
+    game.load.spritesheet('bowser','assets/monstruo.png', 139, 145);
     game.load.spritesheet('portal','assets/portal.png', 35, 140);
     game.load.spritesheet('cofre','assets/cofre.png', 38, 40);
 },  
@@ -27,6 +28,8 @@ this.game.physics.startSystem(Phaser.Physics.ARCADE);
 this.fondo=game.add.sprite(0,0,'fondo');
 this.objetos=game.add.sprite(0,0,'objetos');
 this.paredLateral = game.add.sprite(0, 0, 'paredLateral')
+this.paredSangre = game.add.sprite(660, 1938, 'paredSangre')
+
 this.plat = game.add.group()
 
 
@@ -86,9 +89,9 @@ this.plat.create(720, 658,'platDos');
 this.movil = game.add.sprite(400,4239,'platTres');
 
 this.portal = game.add.sprite(750, 3500, 'portal')
-this.bowser = game.add.sprite(650, 3500, 'bowser')
+this.bowser = game.add.sprite(650, 3467, 'bowser')
 this.cofre = game.add.sprite(390, 618, 'cofre')
-this.personaUno = game.add.sprite(360,4176,'naruto');/////////////////////////////////////
+this.personaUno = game.add.sprite(360,3400,'naruto');/////////////////////////////////////
 
 
 this.game.physics.arcade.enable(this.personaUno);
@@ -101,6 +104,10 @@ this.movil.body.immovable = true
 this.game.physics.arcade.enable(this.paredLateral)
 this.paredLateral.enableBody = true
 this.paredLateral.body.immovable = true
+
+this.game.physics.arcade.enable(this.paredSangre)
+this.paredSangre.enableBody = true
+this.paredSangre.body.immovable = true
 
 this.personaUno.body.gravity.y=1500;
 this.personaUno.body.setSize(this.personaUno.width-20,this.personaUno.height-21,10,10);
@@ -115,7 +122,7 @@ this.personaUno.animations.play('reposo');
 this.portal.animations.add('normal',[0, 1, 2, 3], 6, true);
 this.portal.animations.play('normal');
 
-this.bowser.animations.add('normal',[0, 18, 36, 54, 72, 90], 5, true);
+this.bowser.animations.add('normal',[0, 1, 2, 3, 4, 5, 6, 7], 5, true);
 this.bowser.animations.play('normal');
 
 
@@ -134,7 +141,7 @@ this.game.physics.arcade.enable(this.cofre)
 this.cofre.animations.add('cerrado',[0],10,true);
 this.cofre.animations.add('abierto',[1],10,true);
 
-
+game.camera.follow(this.personaUno)
 },
 
 update:function(){
@@ -147,9 +154,11 @@ if(this.movil.body.y > 4186){
 
 saltoUno = 1
 
-this.game.camera.y = this.personaUno.body.y -300
+console.log(this.personaUno.body.y)
 
 this.game.physics.arcade.collide(this.personaUno, this.paredLateral)
+
+this.game.physics.arcade.collide(this.personaUno, this.paredSangre)
 
 this.game.physics.arcade.collide(this.personaUno,this.suelos,function() {
     saltoUno=1;
