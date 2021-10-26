@@ -7,8 +7,8 @@ var lluviaTerminada = false;
 var colisionLluvia = false;
 var tiempoLluvia = 0;
 var portalDosActivo = false;
-var posicionInicioX = 400;
-var posicionInicioY = 2800;
+var posicionInicioX = 200;
+var posicionInicioY = 4850;
 var ganado = false;
 var tiempoGanado = 0;
 var empezarContadorGanado = false;
@@ -120,6 +120,7 @@ this.portalTres = game.add.sprite(636, 2491, 'portal')
 this.monstruo = game.add.sprite(700, 3540, 'monstruo')
 this.cofre = game.add.sprite(390, 618, 'cofre')
 this.personaUno = game.add.sprite(posicionInicioX, posicionInicioY, 'naruto');/////////////////////////////////////
+this.personaUno.anchor.y = 0.5
 
 
 this.game.physics.arcade.enable(this.personaUno);
@@ -147,7 +148,7 @@ this.monstruo.enableBody = true
 this.monstruo.body.immovable = true
 
 this.personaUno.body.gravity.y=1500;
-this.personaUno.body.setSize(this.personaUno.width-20,this.personaUno.height-21,10,10);
+this.personaUno.body.setSize(30, 45, 7, 0);
 this.personaUno.body.collideWorldBounds = true;
 
 this.personaUno.animations.add('derecha',[6,7,8],10,true);
@@ -208,6 +209,7 @@ game.camera.follow(this.personaUno)
 },
 
 update:function(){
+saltoUno = 0
 
 //Lluvia
 colisionLluvia = false
@@ -238,7 +240,7 @@ if(tiempoLluvia == 300){
 
 if(lluviaTerminada == true){
     this.game.physics.arcade.overlap(this.personaUno, this.portalDos, function(personaUno){
-        personaUno.body.y = 615
+        personaUno.body.y = 560
         personaUno.body.x = 256
     })
     }
@@ -259,8 +261,6 @@ if(this.movil.body.y > 4186){
 } else if(this.movil.body.y < 3900) {
     this.movil.body.velocity.y = 100
 }
-
-saltoUno = 0
 
 //Colisiones
 this.game.physics.arcade.collide(this.personaUno, this.paredLateral)
@@ -284,9 +284,10 @@ this.game.physics.arcade.collide(this.lluvia, this.suelos, function(lluvia, suel
 this.game.physics.arcade.collide(this.personaUno,this.suelos,function() {
     saltoUno=1;
 });
-this.game.physics.arcade.collide(this.personaUno,this.plat,function() {
-    saltoUno=1;
+this.game.physics.arcade.collide(this.personaUno,this.plat,function(personaUno, plat) {
+    if((personaUno.body.y + 45) == plat.body.y){saltoUno=1}
 });
+
 this.game.physics.arcade.collide(this.personaUno,this.movil, function() {
     saltoUno=1;
 });
@@ -297,7 +298,6 @@ this.game.physics.arcade.collide(this.personaUno, this.monstruo, function(person
 })
 
 //Portal
-console.log(vidaMonstruo)
 if(vidaMonstruo == 0){
     portalUnoActivo = true;
     this.portal.alpha = 1;
@@ -385,6 +385,8 @@ if (this.personaUno.body.velocity.x > 0) {
 }else{
     this.personaUno.animations.play('reposo');
 }
+
+//console.log(saltoUno)
 }   
 };
 
