@@ -345,23 +345,6 @@ this.game.physics.arcade.overlap(this.personaUno, this.cofre, function(personaUn
 
 if(empezarContadorGanado == true){ tiempoGanado += 1 }
 if(tiempoGanado == 300){
-    //Reinicio de variables
-    saltoUno=0;
-    saltoDos=0;
-    portalUnoActivo = false;
-    cofreAbierto = false;
-    contador = 0;
-    lluviaTerminada = false;
-    colisionLluvia = false;
-    tiempoLluvia = 0;
-    portalDosActivo = false;
-    ganado = false;
-    tiempoGanado = 0;
-    empezarContadorGanado = false;
-    tiempoBala = 0;
-    this.personaUno.body.y = posicionInicioY
-    this.personaUno.body.x = posicionInicioX
-    //Cambio escena
     game.state.start('fin')
 }
 
@@ -378,8 +361,8 @@ if(this.time.now > tiempoBala && this.input.keyboard.isDown(Phaser.Keyboard.SPAC
 if (this.input.keyboard.isDown(Phaser.Keyboard.W) && saltoUno==1) {
     this.personaUno.body.y=this.personaUno.body.y-10;
     this.personaUno.body.velocity.y=-700;
-
 }
+
 if (this.input.keyboard.isDown(Phaser.Keyboard.A)) {
     this.personaUno.body.velocity.x=-200;
     lado = 0
