@@ -8,7 +8,7 @@ var colisionLluvia = false;
 var tiempoLluvia = 0;
 var portalDosActivo = false;
 var posicionInicioX = 200;
-var posicionInicioY = 400;//4850
+var posicionInicioY = 4850;//4850
 var ganado = false;
 var tiempoGanado = 0;
 var empezarContadorGanado = false;
@@ -22,6 +22,7 @@ var tiempoPortal = 0
 var nombrePantallas = ['muerteUno', 'muerteDos', 'muerteTres', 'muerteCuatro', 'muerteCinco']
 var nombreObjetos = ['espadaUnFilo', 'espadaDosFilos', 'flecha', 'hacha', 'lanza', 'martillo', 'tridente']
 var escogido = null;
+var tocandoPlataforma;
 
 var escenaUno={ 
 preload:function(){
@@ -38,6 +39,7 @@ preload:function(){
     game.load.image('casa','assets/casa.png');
     game.load.image('manzana','assets/manzana.png');
     game.load.image('espantaPajarosGanado','assets/final.png');
+    game.load.image('barraVida','assets/barraVida.png');
     game.load.spritesheet('naruto','assets/naruto.png', 45, 63.75);
     game.load.spritesheet('monstruo','assets/monstruo.png', 139, 145);
     game.load.spritesheet('portal','assets/portal.png', 36, 140);
@@ -133,6 +135,7 @@ this.monstruo = game.add.sprite(700, 3540, 'monstruo')
 this.cofre = game.add.sprite(390, 618, 'cofre')
 this.personaUno = game.add.sprite(posicionInicioX, posicionInicioY, 'naruto');/////////////////////////////////////
 this.personaUno.anchor.y = 0.5
+this.personaUno.anchor.x = 0.5
 
 
 this.game.physics.arcade.enable(this.personaUno);
@@ -158,9 +161,10 @@ this.marcoColisionLluvia.alpha = 0
 this.game.physics.arcade.enable(this.monstruo)
 this.monstruo.enableBody = true
 this.monstruo.body.immovable = true
+this.monstruo.body.setSize(90, 142, 0, 0)
 
 this.personaUno.body.gravity.y=1500;
-this.personaUno.body.setSize(30, 45, 7, 0);
+this.personaUno.body.setSize(30, 45, 0, 0);
 this.personaUno.body.collideWorldBounds = true;
 
 this.personaUno.animations.add('derecha',[6,7,8],10,true);
@@ -220,6 +224,13 @@ this.cofre.animations.play('cerrado')
 this.pantallas = game.add.group()
 
 game.camera.follow(this.personaUno)
+this.barraVida = game.add.sprite(this.monstruo.body.x, this.monstruo.body.y - 100, 'barraVida')
+this.barraVida.anchor.setTo(0.5)
+this.game.physics.arcade.enable(this.barraVida)
+this.barraVida.enableBody = true
+this.barraVida.body.immovable = true
+this.barraVida.alpha = 0;
+
 },
 
 update:function(){
@@ -265,7 +276,7 @@ if(lluviaTerminada == true && tiempoPortal > 100){
 if(this.monstruo.body.x > 600){
     this.monstruo.body.velocity.x = -100
     this.monstruo.scale.x = -1
-} else if(this.monstruo.body.x < 350){
+} else if(this.monstruo.body.x < 380){
     this.monstruo.body.velocity.x = 100
     this.monstruo.scale.x = 1
 }
@@ -304,8 +315,10 @@ this.game.physics.arcade.collide(this.personaUno,this.plat,function(personaUno, 
     if((personaUno.body.y + 45) == plat.body.y){saltoUno=1}
 });
 
-this.game.physics.arcade.collide(this.personaUno,this.movil, function() {
-    saltoUno=1;
+tocandoPlataforma = false
+
+this.game.physics.arcade.collide(this.personaUno,this.movil, function(personaUno, movil) {
+    if((personaUno.body.y + 45.1) >= movil.body.y && (personaUno.body.y + 44.9) <= movil.body.y){saltoUno=1}
 });
 
 this.game.physics.arcade.collide(this.personaUno, this.monstruo, function(personaUno, lluvia){
@@ -315,10 +328,16 @@ this.game.physics.arcade.collide(this.personaUno, this.monstruo, function(person
 })
 
 //Portal
+if(vidaMonstruo == 1){
+    this.barraVida.alpha = 1;
+    this.barraVida.body.x = this.monstruo.body.x
+}
+
 if(vidaMonstruo == 0){
     portalUnoActivo = true;
     this.portal.alpha = 1;
     this.monstruo.kill()
+    this.barraVida.kill()
 }
 
 if(portalUnoActivo == true){
@@ -352,7 +371,7 @@ if(tiempoGanado == 300){
 if(this.time.now > tiempoBala && this.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)){ 
     disparo = this.balas.create(this.personaUno.body.x, this.personaUno.body.y, 'manzana')
     if(disparo){
-        if(lado == 1){disparo.body.velocity.x = 200} else {disparo.body.velocity.x = -200}
+        if(lado == 1){disparo.body.velocity.x = 500} else {disparo.body.velocity.x = -500}
         tiempoBala = this.time.now + 700
     }
 }
@@ -369,8 +388,6 @@ if (this.input.keyboard.isDown(Phaser.Keyboard.A)) {
 }else if (this.input.keyboard.isDown(Phaser.Keyboard.D)) {
     this.personaUno.body.velocity.x=200;
     lado = 1
-}else if (this.input.keyboard.isDown(Phaser.Keyboard.S)) {
-    this.personaUno.body.velocity.y=700; 
 } else {
     this.personaUno.body.velocity.x=0;
 }
@@ -391,7 +408,8 @@ if(muerte == true){
     muerte = false
     contadorPantallas = 0;
     pantallaActivada = true
-    numeroPantalla = Math.floor((Math.random() * (6 - 0)) + 0)
+    numeroPantalla = Math.floor((Math.random() * (5 - 0)) + 0)
+    console.log(numeroPantalla)
     pantalla = this.pantallas.create(0, 4400, nombrePantallas[numeroPantalla])
     console.log('Entra')
 }
@@ -401,6 +419,12 @@ if(pantallaActivada == true){
 }
 
 if(contadorPantallas == 400){pantalla.kill()}
+/*
+console.log('Muñeco')
+console.log(this.personaUno.body.y)
+console.log('Plataforma')
+console.log(this.movil.body.y)
+*/
 }   
 };
 
