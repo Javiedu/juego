@@ -8,7 +8,7 @@ var colisionLluvia = false;
 var tiempoLluvia = 0;
 var portalDosActivo = false;
 var posicionInicioX = 200;
-var posicionInicioY = 4850;
+var posicionInicioY = 400;//4850
 var ganado = false;
 var tiempoGanado = 0;
 var empezarContadorGanado = false;
@@ -19,7 +19,6 @@ var contadorPantallas = 0;
 var muerte = false;
 var pantallaActivada = false;
 var tiempoPortal = 0
-
 var nombrePantallas = ['muerteUno', 'muerteDos', 'muerteTres', 'muerteCuatro', 'muerteCinco']
 var nombreObjetos = ['espadaUnFilo', 'espadaDosFilos', 'flecha', 'hacha', 'lanza', 'martillo', 'tridente']
 var escogido = null;
@@ -38,7 +37,7 @@ preload:function(){
     game.load.image('paredSangre','assets/paredSangre.png');
     game.load.image('casa','assets/casa.png');
     game.load.image('manzana','assets/manzana.png');
-    game.load.image('espantaPajarosGanado','assets/espantaPajarosGanado.png');
+    game.load.image('espantaPajarosGanado','assets/final.png');
     game.load.spritesheet('naruto','assets/naruto.png', 45, 63.75);
     game.load.spritesheet('monstruo','assets/monstruo.png', 139, 145);
     game.load.spritesheet('portal','assets/portal.png', 36, 140);
@@ -339,7 +338,7 @@ this.game.physics.arcade.overlap(this.personaUno, this.cofre, function(personaUn
     cofreAbierto = true
     cofre.animations.play('abierto')
     ganado = true
-    game.add.image(280, 460, 'espantaPajarosGanado')
+    game.add.image(0, 400, 'espantaPajarosGanado')
     empezarContadorGanado = true
 })
 }

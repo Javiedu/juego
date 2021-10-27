@@ -7,18 +7,17 @@ var escenaFin={
         
     create:function(){
         game.add.sprite(0, 400, 'texto')
-        //contador = 0;
+        contador = 0;
     },
     
     update:function(){
-        /*
         contador += 1
         if(contador == 200){game.add.sprite(400, 200, 'volver').anchor.setTo(0.5)}
 
         if(this.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && contador >= 200){
             game.state.start('menu')
         }
-        */
+        //Hacer que recarge la pagina
     }
     };
     
