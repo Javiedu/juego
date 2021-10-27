@@ -248,7 +248,7 @@ if(this.time.now > contador && colisionLluvia == true && lluviaTerminada == fals
     }
 }
 
-if(tiempoLluvia >= 1500){
+if(tiempoLluvia >= 1000){
     lluviaTerminada = true
     this.portalDos.alpha = 1
     tiempoPortal += 1
@@ -356,12 +356,12 @@ if(tiempoGanado == 300){
     colisionLluvia = false;
     tiempoLluvia = 0;
     portalDosActivo = false;
-    posicionInicioX = 200;
-    posicionInicioY = 400;
     ganado = false;
     tiempoGanado = 0;
     empezarContadorGanado = false;
     tiempoBala = 0;
+    this.personaUno.body.y = posicionInicioY
+    this.personaUno.body.x = posicionInicioX
     //Cambio escena
     game.state.start('fin')
 }
