@@ -15,9 +15,8 @@ var escenaFin={
         if(contador == 200){game.add.sprite(400, 200, 'volver').anchor.setTo(0.5)}
 
         if(this.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && contador >= 200){
-            game.state.start('menu')
+            location.href = 'index.html'
         }
-        //Hacer que recarge la pagina
     }
     };
     
