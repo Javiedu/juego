@@ -15,9 +15,14 @@ var empezarContadorGanado = false;
 var tiempoBala = 0;
 var lado = 0;
 var vidaMonstruo = 2;
+var contadorPantallas = 0;
+var muerte = false;
+var pantallaActivada = false;
+var tiempoPortal = 0
 
+var nombrePantallas = ['muerteUno', 'muerteDos', 'muerteTres', 'muerteCuatro', 'muerteCinco']
 var nombreObjetos = ['espadaUnFilo', 'espadaDosFilos', 'flecha', 'hacha', 'lanza', 'martillo', 'tridente']
-
+var escogido = null;
 
 var escenaUno={ 
 preload:function(){
@@ -41,6 +46,7 @@ preload:function(){
 
     //Lluvia
     game.load.image('colisionLluvia','assets/colisionLluvia.png');
+
     //Objetos lanzables
     game.load.image('espadaUnFilo','assets/objetosLluvia/espadaUnFilo.png');
     game.load.image('espadaDosFilos','assets/objetosLluvia/espadaDosFilos.png');
@@ -49,6 +55,13 @@ preload:function(){
     game.load.image('lanza','assets/objetosLluvia/lanza.png');
     game.load.image('martillo','assets/objetosLluvia/martillo.png');
     game.load.image('tridente','assets/objetosLluvia/tridente.png');
+
+    //Pantallas Muerte
+    game.load.image('muerteUno','assets/imagenesMuerte/derrotaUno.png');
+    game.load.image('muerteDos','assets/imagenesMuerte/derrotaDos.png');
+    game.load.image('muerteTres','assets/imagenesMuerte/derrotaTres.png');
+    game.load.image('muerteCuatro','assets/imagenesMuerte/derrotaCuatro.png');
+    game.load.image('muerteCinco','assets/imagenesMuerte/derrotaCinco.png');
 },  
 
 create:function(){
@@ -205,6 +218,8 @@ this.cofre.animations.add('cerrado',[0],10,true);
 this.cofre.animations.add('abierto',[1],10,true);
 this.cofre.animations.play('cerrado')
 
+this.pantallas = game.add.group()
+
 game.camera.follow(this.personaUno)
 },
 
@@ -233,12 +248,13 @@ if(this.time.now > contador && colisionLluvia == true && lluviaTerminada == fals
     }
 }
 
-if(tiempoLluvia == 300){
+if(tiempoLluvia >= 1500){
     lluviaTerminada = true
     this.portalDos.alpha = 1
+    tiempoPortal += 1
 }
 
-if(lluviaTerminada == true){
+if(lluviaTerminada == true && tiempoPortal > 100){
     this.game.physics.arcade.overlap(this.personaUno, this.portalDos, function(personaUno){
         personaUno.body.y = 560
         personaUno.body.x = 256
@@ -270,6 +286,7 @@ this.game.physics.arcade.collide(this.personaUno, this.lluvia, function(personaU
     lluvia.kill()
     personaUno.body.x = posicionInicioX
     personaUno.body.y = posicionInicioY
+    muerte = true
 })
 
 this.game.physics.arcade.collide(this.monstruo, this.balas, function(monstruo, balas){
@@ -295,6 +312,7 @@ this.game.physics.arcade.collide(this.personaUno,this.movil, function() {
 this.game.physics.arcade.collide(this.personaUno, this.monstruo, function(personaUno, lluvia){
     personaUno.body.x = posicionInicioX
     personaUno.body.y = posicionInicioY
+    muerte = true
 })
 
 //Portal
@@ -386,7 +404,21 @@ if (this.personaUno.body.velocity.x > 0) {
     this.personaUno.animations.play('reposo');
 }
 
-//console.log(saltoUno)
+//Pantallas Muerte
+if(muerte == true){
+    muerte = false
+    contadorPantallas = 0;
+    pantallaActivada = true
+    numeroPantalla = Math.floor((Math.random() * (6 - 0)) + 0)
+    pantalla = this.pantallas.create(0, 4400, nombrePantallas[numeroPantalla])
+    console.log('Entra')
+}
+
+if(pantallaActivada == true){
+    contadorPantallas += 1
+}
+
+if(contadorPantallas == 400){pantalla.kill()}
 }   
 };
 
