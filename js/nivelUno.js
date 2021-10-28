@@ -264,7 +264,7 @@ if(tiempoLluvia >= 1000){
     tiempoPortal += 1
 }
 
-if(lluviaTerminada == true && tiempoPortal > 100){
+if(lluviaTerminada == true){
     this.game.physics.arcade.overlap(this.personaUno, this.portalDos, function(personaUno){
         personaUno.body.y = 560
         personaUno.body.x = 256
